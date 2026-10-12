@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; font-src 'self'; img-src 'self'; connect-src 'none'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Mis Gastos">
+<meta name="theme-color" content="#05060f" id="themeColor">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>Mis Gastos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="hbar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><defs><radialGradient id="bg" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#1b2140"/><stop offset=".7" stop-color="#05060f"/></radialGradient><linearGradient id="rc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8ecf8"/><stop offset="1" stop-color="#98c0ef"/></linearGradient></defs><rect width="32" height="32" rx="10" fill="url(#bg)"/><rect x=".5" y=".5" width="31" height="31" rx="9.5" fill="none" stroke="#bad7f7" stroke-opacity=".22"/><path d="M10 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v14.5l-1.6-1-1.6 1-1.6-1-1.6 1-1.6-1-1.6 1-1.6-1-1.4 1V9A1.5 1.5 0 0 1 10 7.5Z" fill="url(#rc)" fill-opacity=".16" stroke="url(#rc)" stroke-width="1.2" stroke-linejoin="round"/><path d="M12 12h6.5M12 15h4.5" stroke="#d1e4fa" stroke-width="1.2" stroke-linecap="round"/><circle cx="22" cy="22" r="5" fill="#663af3"/><path d="M22 19.8v4.4M23.2 20.8c-.3-.4-.7-.5-1.2-.5-.7 0-1.1.3-1.1.8 0 1.1 2.4.5 2.4 1.7 0 .5-.5.8-1.2.8-.6 0-1-.2-1.3-.6" fill="none" stroke="#fff" stroke-width=".9" stroke-linecap="round"/></svg>
+      <span class="bt">Mis Gastos</span>
+    </div>
+    <div class="monthpill">
+      <button id="prev" class="press" aria-label="Mes anterior"><svg class="i" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <span id="mlabel"></span>
+      <button id="next" class="press" aria-label="Mes siguiente"><svg class="i" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <button class="iconbtn press" id="themeBtn" aria-label="Cambiar tema"></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="hero" aria-live="polite">
+    <small id="hlabel"></small>
+    <span class="amt num" id="mtotal"></span>
+    <div class="meta"><span id="mcount"></span><span id="mavg"></span><span id="msync" class="sync"></span></div>
+  </section>
+
+  <!-- AGREGAR -->
+  <section class="view on" id="v-add">
+    <div class="card rise" style="--i:1">
+       <label class="f" for="amt" style="margin-top:0">Monto del gasto</label>
+      <div class="amountwrap"><input id="amt" class="amount" inputmode="numeric" maxlength="18" placeholder="$0" autocomplete="off" aria-label="Monto en pesos chilenos"></div>
+
+      <label class="f" id="catLabel">Tipo de gasto</label>
+      <div class="cats" id="cats" role="group" aria-labelledby="catLabel"></div>
+
+      <label class="f" for="desc">Nombre del gasto</label>
+      <input id="desc" class="t" maxlength="60" list="desclist" placeholder="Ej: café, micro, almuerzo" autocomplete="off" required>
+      <datalist id="desclist"></datalist>
+
+      <label class="f" for="date">Fecha</label>
+      <input id="date" type="date" class="t">
+
+      <div id="recentWrap">
+        <label class="f">Repetir un gasto reciente</label>
+        <div class="recent" id="recent"></div>
+      </div>
+
+      <button class="primary press" id="saveBtn"></button>
+    </div>
+  </section>
+
+  <!-- MOVIMIENTOS -->
+  <section class="view" id="v-list"></section>
+
+  <!-- RESUMEN -->
+  <section class="view" id="v-sum"></section>
+
+  <!-- AJUSTES -->
+  <section class="view" id="v-set">
+    <div class="card rise" style="--i:0;margin-top:0">
+      <div class="sec"><span class="badge"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span><h2>Apariencia</h2></div>
+      <p class="hint">Automático sigue el modo claro u oscuro de tu iPhone.</p>
+      <div class="seg" id="themeSeg" role="group" aria-label="Tema"></div>
+    </div>
+
+    <div class="card rise" style="--i:1">
+      <div class="sec"><span class="badge"><svg class="i" viewBox="0 0 24 24"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg></span><h2>Detección de gastos</h2></div>
+      <label class="f" for="small">Considerar "gasto pequeño" hasta</label>
+      <input id="small" class="t num" inputmode="numeric">
+      <label class="f" for="minrep">Veces que debe repetirse para ser gasto hormiga</label>
+      <select id="minrep" class="t">
+        <option value="2">2 o más veces</option>
+        <option value="3">3 o más veces</option>
+        <option value="4">4 o más veces</option>
+        <option value="5">5 o más veces</option>
+      </select>
+    </div>
+
+    <div class="card rise" style="--i:2">
+      <div class="sec"><span class="badge"><svg class="i" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h2>Respaldo</h2></div>
+      <p class="hint" id="storeHint"></p>
+       <p class="hint">Los nuevos respaldos se cifran con una contraseña que solo tú conoces. Si la pierdes, no podrás recuperar el respaldo. También puedes importar respaldos antiguos en JSON.</p>
+       <label class="f" for="bkPass">Contraseña del respaldo (mínimo 10 caracteres)</label>
+       <input id="bkPass" class="t" type="password" minlength="10" maxlength="200" autocomplete="new-password" placeholder="Escribe una contraseña para cifrar o restaurar">
+      <div class="setrow"><button class="ghost press" id="showBk" type="button"><svg class="i" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Crear respaldo cifrado</button><button class="ghost press" id="copyBk" hidden>Copiar</button></div>
+      <textarea id="bkOut" class="t" readonly hidden style="margin-top:10px" aria-label="Respaldo cifrado"></textarea>
+      <label class="f" for="bkIn">Restaurar desde un respaldo cifrado o anterior</label>
+      <textarea id="bkIn" class="t" placeholder="Pega aquí el texto del respaldo"></textarea>
+      <div class="setrow"><button class="ghost press" id="restore">Restaurar respaldo</button></div>
+    </div>
+
+    <div class="card rise" style="--i:3">
+      <div class="sec"><span class="badge" style="color:var(--danger)"><svg class="i" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></span><h2>Borrar datos</h2></div>
+      <div class="setrow"><button class="ghost press" id="wipe">Borrar todos los gastos</button></div>
+    </div>
+  </section>
+</main>
+
+<nav aria-label="Secciones">
+  <div class="in">
+    <button class="press" data-view="add" aria-current="page"><span class="pill"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg></span>Agregar</button>
+    <button class="press" data-view="list"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></span>Gastos</button>
+    <button class="press" data-view="sum"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg></span>Resumen</button>
+    <button class="press" data-view="set"><span class="pill"><svg class="i" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>Ajustes</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
